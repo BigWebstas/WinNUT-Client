@@ -1,13 +1,18 @@
 ## History:
 
-### Unreleased
+### Version 3.0.0
 #### Changed :
   - Auto reconnection is now perpetual : it keeps retrying on a fixed timer until the
   connection is restored, instead of giving up after 30 attempts.
+  - Major version bumped to 3.0.
 
 #### Added :
   - New "Reconnect Interval" setting (Connection tab) : seconds to wait between
   reconnection attempts (default 30).
+  - GitHub Actions workflow that builds the Windows installer (WinNUT-Setup.msi).
+
+#### Fixed :
+  - The in-app updater now points at this repository's releases.
 
 
 ### Version 2.0.7721
