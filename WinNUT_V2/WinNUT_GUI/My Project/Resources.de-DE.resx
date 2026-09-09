@@ -47,7 +47,7 @@ Ini-Datei nach {0}.old verschoben</value>
     <value>Wiederverbindung läuft</value>
   </data>
   <data name="Frm_Main_Str_04" xml:space="preserve">
-    <value>Versuchen Sie {0} von {1}</value>
+    <value>Versuch {0}</value>
   </data>
   <data name="Frm_Main_Str_05" xml:space="preserve">
     <value>Nicht verbunden</value>
@@ -80,7 +80,7 @@ Ini-Datei nach {0}.old verschoben</value>
     <value>Vom Nut Host getrennt</value>
   </data>
   <data name="Log_Str_06" xml:space="preserve">
-    <value>Versuchen Sie erneut, {0} / {1} zu verbinden</value>
+    <value>Versuchen Sie erneut, {0} zu verbinden</value>
   </data>
   <data name="Log_Str_07" xml:space="preserve">
     <value>Max Retry erreicht. Warten Sie auf die manuelle Wiederverbindung</value>

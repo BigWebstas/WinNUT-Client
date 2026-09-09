@@ -222,7 +222,7 @@ Ini File Moved to {0}.old</value>
     <value>Reconnection In Progress</value>
   </data>
   <data name="Frm_Main_Str_04" xml:space="preserve">
-    <value>Try {0} of {1}</value>
+    <value>Try {0}</value>
   </data>
   <data name="Frm_Main_Str_05" xml:space="preserve">
     <value>Not Connected</value>
@@ -297,7 +297,7 @@ Cancel to Save Msi and Install Later</value>
     <value>Disconnected from Nut Host</value>
   </data>
   <data name="Log_Str_06" xml:space="preserve">
-    <value>Try Reconnect {0} / {1}</value>
+    <value>Try Reconnect {0}</value>
   </data>
   <data name="Log_Str_07" xml:space="preserve">
     <value>Max Retry reached. Wait for manual Reconnection</value>

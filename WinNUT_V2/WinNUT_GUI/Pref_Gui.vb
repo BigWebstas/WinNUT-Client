@@ -33,6 +33,7 @@ Public Class Pref_Gui
             WinNUT_Params.Arr_Reg_Key.Item("NutLogin") = Tb_Login_Nut.Text
             WinNUT_Params.Arr_Reg_Key.Item("NutPassword") = Tb_Pwd_Nut.Text
             WinNUT_Params.Arr_Reg_Key.Item("AutoReconnect") = Cb_Reconnect.Checked
+            WinNUT_Params.Arr_Reg_Key.Item("ReconnectInterval") = CInt(Tb_Reconnect_Interval.Text)
             WinNUT_Params.Arr_Reg_Key.Item("MinInputVoltage") = CInt(Tb_InV_Min.Text)
             WinNUT_Params.Arr_Reg_Key.Item("MaxInputVoltage") = CInt(Tb_InV_Max.Text)
             WinNUT_Params.Arr_Reg_Key.Item("FrequencySupply") = Cbx_Freq_Input.SelectedIndex
@@ -122,6 +123,8 @@ Public Class Pref_Gui
             Tb_Login_Nut.Text = WinNUT_Params.Arr_Reg_Key.Item("NutLogin")
             Tb_Pwd_Nut.Text = WinNUT_Params.Arr_Reg_Key.Item("NutPassword")
             Cb_Reconnect.Checked = WinNUT_Params.Arr_Reg_Key.Item("AutoReconnect")
+            Tb_Reconnect_Interval.Text = CStr(WinNUT_Params.Arr_Reg_Key.Item("ReconnectInterval"))
+            Tb_Reconnect_Interval.Enabled = Cb_Reconnect.Checked
             Tb_InV_Min.Text = CStr(WinNUT_Params.Arr_Reg_Key.Item("MinInputVoltage"))
             Tb_InV_Max.Text = CStr(WinNUT_Params.Arr_Reg_Key.Item("MaxInputVoltage"))
             Cbx_Freq_Input.SelectedIndex = WinNUT_Params.Arr_Reg_Key.Item("FrequencySupply")
@@ -202,6 +205,10 @@ Public Class Pref_Gui
         End Try
     End Sub
 
+    Private Sub Cb_Reconnect_CheckedChanged(sender As Object, e As EventArgs) Handles Cb_Reconnect.CheckedChanged
+        Tb_Reconnect_Interval.Enabled = Cb_Reconnect.Checked
+    End Sub
+
     Private Sub CB_Systray_CheckedChanged(sender As Object, e As EventArgs) Handles CB_Systray.CheckedChanged
         If CB_Systray.Checked Then
             CB_Start_Mini.Enabled = True
@@ -242,7 +249,7 @@ Public Class Pref_Gui
         End If
     End Sub
 
-    Private Sub Number_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles Tb_Port.Validating, Tb_OutV_Min.Validating, Tb_OutV_Max.Validating, Tb_Load_Min.Validating, Tb_Load_Max.Validating, Tb_InV_Min.Validating, Tb_InV_Max.Validating, Tb_InF_Min.Validating, Tb_InF_Max.Validating, Tb_GraceTime.Validating, Tb_Delay_Stop.Validating, Tb_Delay_Com.Validating, Tb_BattV_Min.Validating, Tb_BattV_Max.Validating, Tb_BattLimit_Time.Validating, Tb_BattLimit_Load.Validating
+    Private Sub Number_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles Tb_Port.Validating, Tb_OutV_Min.Validating, Tb_OutV_Max.Validating, Tb_Load_Min.Validating, Tb_Load_Max.Validating, Tb_InV_Min.Validating, Tb_InV_Max.Validating, Tb_InF_Min.Validating, Tb_InF_Max.Validating, Tb_GraceTime.Validating, Tb_Delay_Stop.Validating, Tb_Delay_Com.Validating, Tb_BattV_Min.Validating, Tb_BattV_Max.Validating, Tb_BattLimit_Time.Validating, Tb_BattLimit_Load.Validating, Tb_Reconnect_Interval.Validating
         If Me.IsShowed Then
             Dim StrTest As String = sender.Text
             Dim Result As Object = 0
@@ -253,6 +260,9 @@ Public Class Pref_Gui
                 Case "Tb_Delay_Com"
                     MinValue = 0
                     MaxValue = 60
+                Case "Tb_Reconnect_Interval"
+                    MinValue = 5
+                    MaxValue = 3600
                 Case "Tb_Port"
                     MinValue = 1
                     MaxValue = 65536

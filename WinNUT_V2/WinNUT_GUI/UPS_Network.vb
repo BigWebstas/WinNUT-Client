@@ -159,6 +159,17 @@ Public Class UPS_Network
             Me.AReconnect = Value
         End Set
     End Property
+    ' Seconds between reconnection attempts on the perpetual retry timer.
+    Public Property Reconnect_Interval() As Integer
+        Get
+            Return CInt(Reconnect_Nut.Interval / 1000)
+        End Get
+        Set(ByVal Value As Integer)
+            If Value > 0 Then
+                Reconnect_Nut.Interval = Value * 1000
+            End If
+        End Set
+    End Property
     Public Property IsConnected() As Boolean
         Get
             Return Me.ConnectionStatus
@@ -759,23 +770,8 @@ Public Class UPS_Network
     End Sub
 
     Private Sub Reconnect_UPS(sender As Object, e As EventArgs)
-        Me.Retry += 1
-        If Me.Retry <= Me.MaxRetry And Not Me.Unknown_UPS_Name Then
-            RaiseEvent NewRetry()
-            LogFile.LogTracing(String.Format("Try Reconnect {0} / {1}", Me.Retry, Me.MaxRetry), LogLvl.LOG_NOTICE, Me, String.Format(WinNUT_Globals.StrLog.Item(AppResxStr.STR_LOG_NEW_RETRY), Me.Retry, Me.MaxRetry))
-            Me.Connect()
-            If Me.IsConnected Then
-                LogFile.LogTracing("Nut Host Reconnected", LogLvl.LOG_DEBUG, Me)
-                Reconnect_Nut.Enabled = False
-                Reconnect_Nut.Stop()
-                Me.Retry = 0
-                Update_Nut.Start()
-                Update_Nut.Enabled = True
-                Me.LConnect = False
-                RaiseEvent Connected()
-                Retrieve_UPS_Data(Nothing, Nothing)
-            End If
-        ElseIf Me.Unknown_UPS_Name Or Me.Invalid_Auth_Data Then
+        ' Unrecoverable errors : stop retrying and wait for the user.
+        If Me.Unknown_UPS_Name Or Me.Invalid_Auth_Data Then
             Reconnect_Nut.Enabled = False
             Reconnect_Nut.Stop()
             If Me.Unknown_UPS_Name Then
@@ -784,11 +780,32 @@ Public Class UPS_Network
             If Me.Invalid_Auth_Data Then
                 RaiseEvent InvalidLogin()
             End If
-        Else
-            LogFile.LogTracing("Max Retry reached. Stop Process Autoreconnect and wait for manual Reconnection", LogLvl.LOG_ERROR, Me, WinNUT_Globals.StrLog.Item(AppResxStr.STR_LOG_STOP_RETRY))
+            Return
+        End If
+
+        ' Autoreconnect turned off while the timer was running.
+        If Not Me.AReconnect Then
             Reconnect_Nut.Enabled = False
             Reconnect_Nut.Stop()
             RaiseEvent Deconnected()
+            Return
+        End If
+
+        ' Perpetual retry : keep trying on the timer until we get back in.
+        Me.Retry += 1
+        RaiseEvent NewRetry()
+        LogFile.LogTracing(String.Format("Try Reconnect {0}", Me.Retry), LogLvl.LOG_NOTICE, Me, String.Format(WinNUT_Globals.StrLog.Item(AppResxStr.STR_LOG_NEW_RETRY), Me.Retry))
+        Me.Connect()
+        If Me.IsConnected Then
+            LogFile.LogTracing("Nut Host Reconnected", LogLvl.LOG_DEBUG, Me)
+            Reconnect_Nut.Enabled = False
+            Reconnect_Nut.Stop()
+            Me.Retry = 0
+            Update_Nut.Start()
+            Update_Nut.Enabled = True
+            Me.LConnect = False
+            RaiseEvent Connected()
+            Retrieve_UPS_Data(Nothing, Nothing)
         End If
     End Sub
 End Class

@@ -1,5 +1,15 @@
 ## History:
 
+### Unreleased
+#### Changed :
+  - Auto reconnection is now perpetual : it keeps retrying on a fixed timer until the
+  connection is restored, instead of giving up after 30 attempts.
+
+#### Added :
+  - New "Reconnect Interval" setting (Connection tab) : seconds to wait between
+  reconnection attempts (default 30).
+
+
 ### Version 2.0.7721
 #### Fix :
   - Fix  an error when checking for an update to the latest version.

@@ -172,6 +172,7 @@ Public Class WinNUT
         UPS_Network.NutLogin = WinNUT_Params.Arr_Reg_Key.Item("NutLogin")
         UPS_Network.NutPassword = WinNUT_Params.Arr_Reg_Key.Item("NutPassword")
         UPS_Network.AutoReconnect = WinNUT_Params.Arr_Reg_Key.Item("AutoReconnect")
+        UPS_Network.Reconnect_Interval = WinNUT_Params.Arr_Reg_Key.Item("ReconnectInterval")
         UPS_Network.Battery_Limit = WinNUT_Params.Arr_Reg_Key.Item("ShutdownLimitBatteryCharge")
         UPS_Network.Backup_Limit = WinNUT_Params.Arr_Reg_Key.Item("ShutdownLimitUPSRemainTime")
         UPS_Network.UPS_Follow_FSD = WinNUT_Params.Arr_Reg_Key.Item("Follow_FSD")
@@ -393,7 +394,7 @@ Public Class WinNUT
     End Sub
 
     Private Sub NewRetry_NotifyIcon() Handles UPS_Network.NewRetry
-        Dim Message As String = String.Format(WinNUT_Globals.StrLog.Item(AppResxStr.STR_MAIN_RETRY), UPS_Network.UPS_Retry, UPS_Network.UPS_MaxRetry)
+        Dim Message As String = String.Format(WinNUT_Globals.StrLog.Item(AppResxStr.STR_MAIN_RETRY), UPS_Network.UPS_Retry)
         RaiseEvent UpdateNotifyIconStr("Retry", Message)
         UpdateIcon_NotifyIcon()
         LogFile.LogTracing("Update Icon", LogLvl.LOG_DEBUG, Me)
@@ -539,7 +540,7 @@ Public Class WinNUT
         Lbl_VName.Text = Me.UPS_Model
         Lbl_VSerial.Text = Me.UPS_Serial
         Lbl_VFirmware.Text = Me.UPS_Firmware
-        If UPS_Network.AutoReconnect And UPS_Network.UPS_Retry <= UPS_Network.UPS_MaxRetry Then
+        If UPS_Network.AutoReconnect Then
             ActualAppIconIdx = AppIconIdx.IDX_ICO_RETRY
         Else
             ActualAppIconIdx = AppIconIdx.IDX_ICO_OFFLINE
@@ -750,6 +751,9 @@ Public Class WinNUT
             Else
                 UPS_Network.AutoReconnect = False
             End If
+        End If
+        If UPS_Network.Reconnect_Interval <> WinNUT_Params.Arr_Reg_Key.Item("ReconnectInterval") Then
+            UPS_Network.Reconnect_Interval = WinNUT_Params.Arr_Reg_Key.Item("ReconnectInterval")
         End If
         If UPS_Network.NutHost <> WinNUT_Params.Arr_Reg_Key.Item("ServerAddress") Then
             NeedReconnect = True

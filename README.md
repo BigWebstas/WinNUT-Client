@@ -9,6 +9,19 @@ To use it, please follow the following steps:
 3. If you were using an older version of WinNUT (v1.x), copy your "ups.ini" configuration file to the WinNUT-Client installation directory (by default "C:\Program Files(x86)\WinNUT-Client ") for an automatic import of your parameters during the first launch
 4. Start WinNUT V2 and modify the parameters according to your needs
 
+## Connection settings
+
+In the preferences, on the *Connection* tab:
+
+- **Re-establish connection** (auto reconnect): when the link to the NUT server
+  drops, WinNUT keeps trying to reconnect. Retries are now perpetual: WinNUT
+  keeps trying on a timer until the connection is back, instead of giving up
+  after a fixed number of attempts. It stops only if you disable auto reconnect,
+  or if the server reports an unrecoverable error (unknown UPS name or invalid
+  credentials).
+- **Reconnect interval**: how long to wait between reconnection attempts, in
+  seconds (default `30`, range `5`–`3600`). Only used when auto reconnect is on.
+
 ## Specific Configuration
 
 ### For Synology NAS 

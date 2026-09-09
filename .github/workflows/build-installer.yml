@@ -1,0 +1,111 @@
+name: Build Windows Installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    env:
+      SOLUTION: WinNUT_V2\WinNUT_V2.sln
+      CONFIGURATION: Release
+      # https://marketplace.visualstudio.com/items?itemName=VisualStudioClient.MicrosoftVisualStudio2022InstallerProjects
+      INSTALLER_PROJECTS_VERSION: "2.0.1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore "$env:SOLUTION"
+
+      - name: Install "Visual Studio Installer Projects" extension
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $vsix = Join-Path $env:RUNNER_TEMP "InstallerProjects.vsix"
+          $url = "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/VisualStudioClient/vsextensions/MicrosoftVisualStudio2022InstallerProjects/$env:INSTALLER_PROJECTS_VERSION/vspackage"
+          Write-Host "Downloading $url"
+          Invoke-WebRequest -Uri $url -OutFile $vsix -Headers @{ "Accept" = "application/octet-stream" } -UseBasicParsing
+
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $ideDir = & $vswhere -latest -property productPath | Split-Path
+          $vsixInstaller = Join-Path $ideDir "VSIXInstaller.exe"
+
+          Write-Host "Installing VSIX with $vsixInstaller"
+          $p = Start-Process -FilePath $vsixInstaller -ArgumentList '/quiet','/admin',"`"$vsix`"" -Wait -PassThru
+          # 1001 = already installed
+          if ($p.ExitCode -ne 0 -and $p.ExitCode -ne 1001) {
+            throw "VSIXInstaller failed with exit code $($p.ExitCode)"
+          }
+
+      - name: Allow devenv to build .vdproj headlessly
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vsRoot = & $vswhere -latest -property installationPath
+          $dir = Join-Path $vsRoot "Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild"
+          if (Test-Path (Join-Path $dir "DisableOutOfProcBuild.exe")) {
+            Push-Location $dir
+            .\DisableOutOfProcBuild.exe
+            Pop-Location
+          } else {
+            Write-Warning "DisableOutOfProcBuild.exe not found at $dir"
+          }
+
+      - name: Build solution (app + MSI)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          # productPath points at devenv.exe (GUI, returns immediately). Use devenv.com
+          # so the build runs synchronously and streams output with a real exit code.
+          $devenv = (& $vswhere -latest -property productPath) -replace '\.exe$', '.com'
+          Write-Host "Using $devenv"
+          & $devenv "$env:SOLUTION" /Build "$env:CONFIGURATION|Any CPU"
+          $code = $LASTEXITCODE
+          Write-Host "devenv exit code: $code"
+          if ($code -ne 0) { throw "devenv build failed with exit code $code" }
+
+      - name: Collect installer output
+        id: collect
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          Write-Host "--- WinNUT_V2\Setup tree ---"
+          Get-ChildItem -Path "WinNUT_V2\Setup" -Recurse -File | Select-Object FullName, Length | Format-Table -AutoSize | Out-String | Write-Host
+          $out = "artifacts"
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          $found = Get-ChildItem -Path "WinNUT_V2\Setup" -Recurse -Include *.msi,*.exe -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match '\\Release\\' }
+          if (-not $found) { throw "No installer produced under WinNUT_V2\Setup\**\Release" }
+          $found | ForEach-Object { Copy-Item $_.FullName $out; Write-Host "Collected $($_.Name)" }
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WinNUT-Setup
+          path: artifacts/*
+          if-no-files-found: error
+
+      - name: Attach installer to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
