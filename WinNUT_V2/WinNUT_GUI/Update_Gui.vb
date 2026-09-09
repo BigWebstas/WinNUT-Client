@@ -11,7 +11,7 @@ Public Class Update_Gui
 
     Private ChangeLogByteSize As Long
     Public Shared WithEvents LogFile As Logger
-    Private Const GitApiURL As String = "https://api.github.com/repos/gawindx/WinNUT-Client/releases"
+    Private Const GitApiURL As String = "https://api.github.com/repos/BigWebstas/WinNUT-Client/releases"
     Private WithEvents WebC As New System.Net.WebClient
     Private JSONReleaseFile As Object
     Private sChangeLog As String

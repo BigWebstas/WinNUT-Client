@@ -108,4 +108,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/*
+          # The in-app updater downloads the release's first asset, so keep the
+          # MSI as the only attachment. setup.exe stays in the build artifact.
+          files: artifacts/WinNUT-Setup.msi
+          fail_on_unmatched_files: true
