@@ -1,6 +1,6 @@
 ## History:
 
-### Version 3.0.0
+### Version 3.0.0.0
 #### Changed :
   - Auto reconnection is now perpetual : it keeps retrying on a fixed timer until the
   connection is restored, instead of giving up after 30 attempts.
