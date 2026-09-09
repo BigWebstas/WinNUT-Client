@@ -23,6 +23,7 @@ Public Module WinNUT_Params
             .Add("NutLogin", Cryptor.EncryptData(""))
             .Add("NutPassword", Cryptor.EncryptData(""))
             .Add("AutoReconnect", vbFalse)
+            .Add("ReconnectInterval", 0)
             .Add("MinInputVoltage", 0)
             .Add("MaxInputVoltage", 0)
             .Add("FrequencySupply", 1)
@@ -74,6 +75,7 @@ Public Module WinNUT_Params
             .Add("NutLogin", Cryptor.EncryptData(""))
             .Add("NutPassword", Cryptor.EncryptData(""))
             .Add("AutoReconnect", vbFalse)
+            .Add("ReconnectInterval", 30)
         End With
         With Arr_Reg_Calibration
             .Add("MinInputVoltage", 210)
@@ -196,6 +198,7 @@ Public Module WinNUT_Params
                 .Add("UPS name", "UPSName")
                 .Add("Delay", "Delay")
                 .Add("AutoReconnect", "AutoReconnect")
+                .Add("Reconnect Interval", "ReconnectInterval")
                 .Add("Min Input Voltage", "MinInputVoltage")
                 .Add("Max Input Voltage", "MaxInputVoltage")
                 .Add("Frequency Supply", "FrequencySupply")
@@ -236,7 +239,7 @@ Public Module WinNUT_Params
                         Dim newkey = Old_Ini_Key.Item(k.name)
                         If newkey <> "" Then
                             Select Case k.name
-                                Case "Port", "Delay", "Min Input Voltage", "Max Input Voltage", "Min Input Frequency",
+                                Case "Port", "Delay", "Reconnect Interval", "Min Input Voltage", "Max Input Voltage", "Min Input Frequency",
                                      "Max Input Frequency", "Min Output Voltage", "Max Output Voltage", "Min UPS Load", "Max UPS Load",
                                      "Min Batt Voltage", "Max Batt Voltage", "Shutdown Limit Battery Charge", "Shutdown Limit UPS Remain Time", "Delay To Shutdown"
                                     .Item(newkey) = CInt(k.value)

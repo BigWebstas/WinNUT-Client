@@ -36,6 +36,8 @@ Partial Class Pref_Gui
         Me.Tb_Port = New System.Windows.Forms.TextBox()
         Me.Tb_Server_IP = New System.Windows.Forms.TextBox()
         Me.Cb_Reconnect = New System.Windows.Forms.CheckBox()
+        Me.Tb_Reconnect_Interval = New System.Windows.Forms.TextBox()
+        Me.Lbl_Reconnect_Interval = New System.Windows.Forms.Label()
         Me.Lbl_Delay_Com = New System.Windows.Forms.Label()
         Me.Lbl_Name_UPS = New System.Windows.Forms.Label()
         Me.Lbl_Port = New System.Windows.Forms.Label()
@@ -129,6 +131,8 @@ Partial Class Pref_Gui
         Me.Tab_Connexion.Controls.Add(Me.Tb_Port)
         Me.Tab_Connexion.Controls.Add(Me.Tb_Server_IP)
         Me.Tab_Connexion.Controls.Add(Me.Cb_Reconnect)
+        Me.Tab_Connexion.Controls.Add(Me.Lbl_Reconnect_Interval)
+        Me.Tab_Connexion.Controls.Add(Me.Tb_Reconnect_Interval)
         Me.Tab_Connexion.Controls.Add(Me.Lbl_Delay_Com)
         Me.Tab_Connexion.Controls.Add(Me.Lbl_Name_UPS)
         Me.Tab_Connexion.Controls.Add(Me.Lbl_Port)
@@ -198,6 +202,24 @@ Partial Class Pref_Gui
         Me.Cb_Reconnect.Name = "Cb_Reconnect"
         Me.Pref_TlTip.SetToolTip(Me.Cb_Reconnect, resources.GetString("Cb_Reconnect.ToolTip"))
         Me.Cb_Reconnect.UseVisualStyleBackColor = True
+        Me.Cb_Reconnect.AutoSize = False
+        Me.Cb_Reconnect.Size = New System.Drawing.Size(150, 17)
+        '
+        'Tb_Reconnect_Interval
+        '
+        Me.Tb_Reconnect_Interval.Location = New System.Drawing.Point(280, 212)
+        Me.Tb_Reconnect_Interval.MaxLength = 4
+        Me.Tb_Reconnect_Interval.Name = "Tb_Reconnect_Interval"
+        Me.Tb_Reconnect_Interval.Size = New System.Drawing.Size(36, 20)
+        Me.Pref_TlTip.SetToolTip(Me.Tb_Reconnect_Interval, "Seconds to wait between reconnection attempts.")
+        '
+        'Lbl_Reconnect_Interval
+        '
+        Me.Lbl_Reconnect_Interval.AutoSize = True
+        Me.Lbl_Reconnect_Interval.Location = New System.Drawing.Point(222, 215)
+        Me.Lbl_Reconnect_Interval.Name = "Lbl_Reconnect_Interval"
+        Me.Lbl_Reconnect_Interval.Size = New System.Drawing.Size(52, 13)
+        Me.Lbl_Reconnect_Interval.Text = "Every (s)"
         '
         'Lbl_Delay_Com
         '
@@ -664,6 +686,8 @@ Partial Class Pref_Gui
     Friend WithEvents TabControl_Options As TabControl
     Friend WithEvents Tab_Connexion As TabPage
     Friend WithEvents Cb_Reconnect As CheckBox
+    Friend WithEvents Tb_Reconnect_Interval As TextBox
+    Friend WithEvents Lbl_Reconnect_Interval As Label
     Friend WithEvents Lbl_Delay_Com As Label
     Friend WithEvents Lbl_Name_UPS As Label
     Friend WithEvents Lbl_Port As Label
