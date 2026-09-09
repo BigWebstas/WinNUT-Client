@@ -74,11 +74,13 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          $devenv = & $vswhere -latest -property productPath
+          # productPath points at devenv.exe (GUI, returns immediately). Use devenv.com
+          # so the build runs synchronously and streams output with a real exit code.
+          $devenv = (& $vswhere -latest -property productPath) -replace '\.exe$', '.com'
           Write-Host "Using $devenv"
-          & $devenv "$env:SOLUTION" /Build "$env:CONFIGURATION|Any CPU" /Out "$env:RUNNER_TEMP\build.log"
+          & $devenv "$env:SOLUTION" /Build "$env:CONFIGURATION|Any CPU"
           $code = $LASTEXITCODE
-          if (Test-Path "$env:RUNNER_TEMP\build.log") { Get-Content "$env:RUNNER_TEMP\build.log" }
+          Write-Host "devenv exit code: $code"
           if ($code -ne 0) { throw "devenv build failed with exit code $code" }
 
       - name: Collect installer output
@@ -86,10 +88,13 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
+          Write-Host "--- WinNUT_V2\Setup tree ---"
+          Get-ChildItem -Path "WinNUT_V2\Setup" -Recurse -File | Select-Object FullName, Length | Format-Table -AutoSize | Out-String | Write-Host
           $out = "artifacts"
           New-Item -ItemType Directory -Force -Path $out | Out-Null
-          $found = Get-ChildItem -Path "WinNUT_V2\Setup\Release" -Recurse -Include *.msi,*.exe -ErrorAction SilentlyContinue
-          if (-not $found) { throw "No installer produced under WinNUT_V2\Setup\Release" }
+          $found = Get-ChildItem -Path "WinNUT_V2\Setup" -Recurse -Include *.msi,*.exe -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match '\\Release\\' }
+          if (-not $found) { throw "No installer produced under WinNUT_V2\Setup\**\Release" }
           $found | ForEach-Object { Copy-Item $_.FullName $out; Write-Host "Collected $($_.Name)" }
 
       - name: Upload installer artifact
