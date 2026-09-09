@@ -984,7 +984,7 @@ This additional time could go beyond the UPS backup time - USE WITH CAUTION!!!</
     <value />
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>354, 311</value>
+    <value>354, 341</value>
   </data>
   <data name="Lbl_Percent.Location" type="System.Drawing.Point, System.Drawing">
     <value>297, 12</value>
@@ -1240,7 +1240,7 @@ Accepted value: Numeric value from 0 to 3600.</value>
     <value>14</value>
   </data>
   <data name="Btn_Ok.Location" type="System.Drawing.Point, System.Drawing">
-    <value>105, 278</value>
+    <value>105, 308</value>
   </data>
   <data name="Lbl_Port.Size" type="System.Drawing.Size, System.Drawing">
     <value>52, 13</value>
@@ -1404,7 +1404,7 @@ Accepted value: Numerical value from 1 to 60 seconds.</value>
     <value>$this</value>
   </data>
   <data name="Btn_Apply.Location" type="System.Drawing.Point, System.Drawing">
-    <value>186, 278</value>
+    <value>186, 308</value>
   </data>
   <data name="Cbx_Branch_Update.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -8699,7 +8699,7 @@ Accepted value: Numeric value from 0 to 999.</value>
     <value>4, 22</value>
   </data>
   <data name="TabControl_Options.Size" type="System.Drawing.Size, System.Drawing">
-    <value>330, 260</value>
+    <value>330, 290</value>
   </data>
   <data name="CB_Start_Mini.Size" type="System.Drawing.Size, System.Drawing">
     <value>220, 17</value>
@@ -8748,7 +8748,7 @@ Accepted value: Numeric value from 0 to 999.</value>
 Accepted value: Numeric value from 0 to 3600.</value>
   </data>
   <data name="Btn_Cancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>267, 278</value>
+    <value>267, 308</value>
   </data>
   <data name="CB_Follow_FSD.CheckAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleRight</value>
