@@ -364,3 +364,9 @@ FodyWeavers.xsd
 *.pdb
 *.msi
 WinNUT_V2/.vs
+
+# Claude Code
+CLAUDE.md
+.claude/
+GEMINI.md
+.idea/
